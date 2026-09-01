@@ -1,33 +1,28 @@
-const express = require("express")
 
+const express = require("express") 
+const bcrypt = require("bcrypt")
 const connectDB = require("./config/dataBase")
 const UserModel = require("./models/users")
+const jwt = require("jsonwebtoken")
+const cookieParser = require("cookie-parser");
+const authRouter = require('./routes/auth.js')
+const profileRouter = require('./routes/profile.js')
+const requestRouter = require('./routes/request.js')
+const userRouter = require('./routes/user.js')
+
+
 
 const app = express()
 
+app.use(express.json())
 
-app.post("/signup", async (req,res)=>{
+app.use(cookieParser());
 
-    try{
+app.use("/", authRouter)
+app.use("/", profileRouter)
+app.use("/", requestRouter)
+app.use("/", userRouter)
 
-        const user = new UserModel({
-            firstName:"jagadeesh",
-            lastName:"babu",
-            age:28,
-        })
-
-        await user.save()
-
-        res.send("success")
-
-    }
-    catch(err){
-
-        res.status(500).send("Error saving user")
-
-    }
-
-})
 
 connectDB()
 .then(()=>{
